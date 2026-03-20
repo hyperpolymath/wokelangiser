@@ -1,0 +1,45 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= Wokelangiser
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+:toc: left
+:icons: font
+
+== What Is This?
+
+WokeLangiser adds **human-centered patterns** to existing code — consent-based
+operations, inclusive error messages, and accessibility-first interfaces.
+
+WokeLang is a language designed for human collaboration, empathy, and safety.
+WokeLangiser brings these patterns to existing codebases.
+
+== How It Works
+
+Configure patterns in `wokelangiser.toml`. WokeLangiser:
+
+1. Analyses existing error messages and user-facing strings
+2. Generates inclusive, accessible alternatives
+3. Adds consent patterns (`only if okay`) for destructive operations
+4. Adds attribution (`thanks to`) for dependency acknowledgment
+5. Generates accessibility metadata (screen reader hints, high-contrast)
+
+== Key Value
+
+* **Inclusive error messages** — clear, respectful, actionable
+* **Consent patterns** — destructive operations require explicit agreement
+* **Accessibility-first** — screen readers, high contrast, keyboard navigation
+* **Empathetic UX** — software that respects the human using it
+
+== Architecture
+
+Follows the hyperpolymath -iser pattern:
+manifest -> Idris2 ABI proof -> Zig FFI bridge -> target language codegen.
+Part of the https://github.com/hyperpolymath/iseriser[-iser family].
+
+== Status
+
+**Pre-alpha.** Architecture defined, scaffolding in place, codegen pending.
+
+== License
+
+SPDX-License-Identifier: PMPL-1.0-or-later
