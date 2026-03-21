@@ -16,7 +16,7 @@ serde = { version = "1", features = ["derive"] }
 toml = "0.8"
 anyhow = "1"
 thiserror = "2"
-handlebars = "6"
+serde_json = "1"
 walkdir = "2"
 
 [dev-dependencies]
