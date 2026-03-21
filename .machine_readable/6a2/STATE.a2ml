@@ -11,28 +11,35 @@
   (project-context
     (name "wokelangiser")
     (description "Add consent patterns, accessibility annotations, i18n hooks, and cultural sensitivity markers to existing code via WokeLang")
-    (status "scaffold-documented")
+    (status "phase-1-complete")
     (priority "—")
     (ecosystem "-iser family (https://github.com/hyperpolymath/iseriser)"))
 
   (current-position
-    (phase "scaffold-with-bespoke-abi")
-    (completion-percentage 15)
-    (milestone "Bespoke Idris2 ABI types (ConsentType, WCAGLevel, I18nHook, CulturalContext) defined; Zig FFI with consent state machine, contrast ratio calculator, and domain-specific operations implemented; documentation complete"))
+    (phase "phase-1-complete")
+    (completion-percentage 45)
+    (milestone "Phase 1: scaffold, bespoke ABI/FFI, CLI, manifest parser, codegen stubs, RSR compliance, documentation — all complete"))
 
   (route-to-mvp
-    (step 1 "Implement source analysis: detect user-facing strings, forms, destructive operations")
-    (step 2 "Build consent injection codegen: @consent decorator insertion into target AST")
-    (step 3 "Build accessibility annotation codegen: @accessible with ARIA/contrast/focus")
-    (step 4 "Build i18n extraction: hardcoded string -> locale bundle generation")
-    (step 5 "Build cultural sensitivity checker: term database and alternative suggestions")
-    (step 6 "End-to-end example: Flask app with GDPR consent + WCAG AA + 3-locale i18n")
-    (step 7 "Integration tests with real-world codebases"))
+    (step 1 "DONE — Project scaffold from rsr-template-repo")
+    (step 2 "DONE — Bespoke Idris2 ABI type definitions")
+    (step 3 "DONE — Bespoke Zig FFI implementation stubs")
+    (step 4 "DONE — CLI with subcommands (init, validate, generate, build, run, info)")
+    (step 5 "DONE — Manifest parser (wokelangiser.toml)")
+    (step 6 "DONE — Codegen engine stubs")
+    (step 7 "DONE — RSR compliance (17 workflows, governance, contractiles)")
+    (step 8 "DONE — Bespoke documentation (README, ROADMAP, CONTRIBUTING, CHANGELOG)")
+    (step 9 "Implement core domain logic (source analysis, pattern detection)")
+    (step 10 "Implement codegen passes (target-language-specific output)")
+    (step 11 "Write Idris2 formal proofs for domain invariants")
+    (step 12 "End-to-end integration tests with real inputs")
+    (step 13 "BoJ cartridge and PanLL panel integration")
+    (step 14 "Performance benchmarks and optimisation"))
 
   (blockers-and-issues
-    (none "Project is in documented scaffold phase — no blockers yet"))
+    (none "Phase 1 complete — no blockers. Phase 2 requires domain logic implementation."))
 
   (critical-next-actions
-    (action "Implement source analysis for consent point detection")
-    (action "Build first end-to-end example (Flask app with cookie consent)")
-    (action "Wire Zig FFI consent_check into Rust CLI pipeline")))
+    (action "Implement core domain logic in src/core/")
+    (action "Write first end-to-end example with real input")
+    (action "Begin Idris2 formal proofs for domain-specific invariants")))
