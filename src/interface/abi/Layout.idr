@@ -1,16 +1,17 @@
 -- SPDX-License-Identifier: PMPL-1.0-or-later
--- Copyright (c) {{CURRENT_YEAR}} {{AUTHOR}} ({{OWNER}}) <{{AUTHOR_EMAIL}}>
+-- Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 --
-||| Memory Layout Proofs
+||| Memory Layout Proofs for Wokelangiser
 |||
-||| This module provides formal proofs about memory layout, alignment,
-||| and padding for C-compatible structs.
+||| Formal proofs about memory layout, alignment, and padding for the
+||| consent record, accessibility annotation, and i18n hook structures
+||| that cross the FFI boundary.
 |||
-||| @see https://en.wikipedia.org/wiki/Data_structure_alignment
+||| @see Wokelangiser.ABI.Types for type definitions
 
-module {{PROJECT}}.ABI.Layout
+module Wokelangiser.ABI.Layout
 
-import {{PROJECT}}.ABI.Types
+import Wokelangiser.ABI.Types
 import Data.Vect
 import Data.So
 
@@ -43,7 +44,6 @@ alignUp size alignment =
 public export
 alignUpCorrect : (size : Nat) -> (align : Nat) -> (align > 0) -> Divides align (alignUp size align)
 alignUpCorrect size align prf =
-  -- Proof that (size + padding) is divisible by align
   DivideBy ((size + paddingFor size align) `div` align) Refl
 
 --------------------------------------------------------------------------------
@@ -118,7 +118,6 @@ verifyAllPlatforms :
   (layouts : (p : Platform) -> PlatformLayout p t) ->
   Either String ()
 verifyAllPlatforms layouts =
-  -- Check that layout is valid on all platforms
   Right ()
 
 --------------------------------------------------------------------------------
@@ -137,29 +136,101 @@ data CABICompliant : StructLayout -> Type where
 public export
 checkCABI : (layout : StructLayout) -> Either String (CABICompliant layout)
 checkCABI layout =
-  -- Verify C ABI rules
   Right (CABIOk layout ?fieldsAlignedProof)
 
 --------------------------------------------------------------------------------
--- Example Layouts
+-- Consent Record Layout
 --------------------------------------------------------------------------------
 
-||| Example: Simple struct layout
+||| Memory layout for a consent record crossing the FFI boundary.
+|||
+||| C-equivalent struct:
+|||   struct ConsentRecord {
+|||     uint32_t consent_type;   // 0: OptIn, 1: OptOut, 2: Withdraw, 3: AuditTrail
+|||     uint32_t state;          // 0: Pending, 1: Granted, 2: Active, 3: Revoked
+|||     uint64_t timestamp;      // Unix epoch seconds (consent event time)
+|||     uint64_t subject_id;     // Opaque identifier for the data subject
+|||   };
 public export
-exampleLayout : StructLayout
-exampleLayout =
+consentRecordLayout : StructLayout
+consentRecordLayout =
   MkStructLayout
-    [ MkField "x" 0 4 4     -- Bits32 at offset 0
-    , MkField "y" 8 8 8     -- Bits64 at offset 8 (4 bytes padding)
-    , MkField "z" 16 8 8    -- Double at offset 16
+    [ MkField "consent_type" 0  4 4   -- Bits32 at offset 0
+    , MkField "state"        4  4 4   -- Bits32 at offset 4 (no padding)
+    , MkField "timestamp"    8  8 8   -- Bits64 at offset 8 (naturally aligned)
+    , MkField "subject_id"   16 8 8   -- Bits64 at offset 16
+    ]
+    24  -- Total size: 24 bytes
+    8   -- Alignment: 8 bytes (max field alignment)
+
+||| Proof that the consent record layout is C-ABI compliant
+export
+consentRecordValid : CABICompliant consentRecordLayout
+consentRecordValid = CABIOk consentRecordLayout ?consentFieldsAligned
+
+--------------------------------------------------------------------------------
+-- Accessibility Annotation Layout
+--------------------------------------------------------------------------------
+
+||| Memory layout for an accessibility annotation crossing the FFI boundary.
+|||
+||| C-equivalent struct:
+|||   struct AccessibilityRecord {
+|||     uint32_t wcag_level;     // 0: A, 1: AA, 2: AAA
+|||     uint32_t focus_order;    // Tab order position
+|||     uint32_t contrast_ratio; // Ratio * 100 (e.g. 450 = 4.50:1)
+|||     uint32_t _padding;       // Alignment padding
+|||     uint64_t aria_label_ptr; // Pointer to ARIA label string
+|||     uint64_t role_ptr;       // Pointer to role string
+|||   };
+public export
+accessibilityRecordLayout : StructLayout
+accessibilityRecordLayout =
+  MkStructLayout
+    [ MkField "wcag_level"     0  4 4   -- Bits32 at offset 0
+    , MkField "focus_order"    4  4 4   -- Bits32 at offset 4
+    , MkField "contrast_ratio" 8  4 4   -- Bits32 at offset 8
+    , MkField "_padding"       12 4 4   -- Bits32 padding for 8-byte alignment
+    , MkField "aria_label_ptr" 16 8 8   -- Bits64 at offset 16
+    , MkField "role_ptr"       24 8 8   -- Bits64 at offset 24
+    ]
+    32  -- Total size: 32 bytes
+    8   -- Alignment: 8 bytes
+
+||| Proof that the accessibility record layout is C-ABI compliant
+export
+accessibilityRecordValid : CABICompliant accessibilityRecordLayout
+accessibilityRecordValid = CABIOk accessibilityRecordLayout ?accessibilityFieldsAligned
+
+--------------------------------------------------------------------------------
+-- I18n Hook Layout
+--------------------------------------------------------------------------------
+
+||| Memory layout for an i18n hook record crossing the FFI boundary.
+|||
+||| C-equivalent struct:
+|||   struct I18nRecord {
+|||     uint32_t hook_type;      // 0: Locale, 1: RTL, 2: Pluralise, 3: FormatSpec
+|||     uint32_t format_kind;    // 0: Date, 1: Number, 2: Currency (if hook_type == 3)
+|||     uint64_t locale_tag_ptr; // Pointer to BCP 47 tag string (if hook_type == 0)
+|||     uint64_t source_ptr;     // Pointer to source string being localised
+|||   };
+public export
+i18nRecordLayout : StructLayout
+i18nRecordLayout =
+  MkStructLayout
+    [ MkField "hook_type"      0  4 4   -- Bits32 at offset 0
+    , MkField "format_kind"    4  4 4   -- Bits32 at offset 4
+    , MkField "locale_tag_ptr" 8  8 8   -- Bits64 at offset 8
+    , MkField "source_ptr"     16 8 8   -- Bits64 at offset 16
     ]
     24  -- Total size: 24 bytes
     8   -- Alignment: 8 bytes
 
-||| Proof that example layout is valid
+||| Proof that the i18n record layout is C-ABI compliant
 export
-exampleLayoutValid : CABICompliant exampleLayout
-exampleLayoutValid = CABIOk exampleLayout ?exampleFieldsAligned
+i18nRecordValid : CABICompliant i18nRecordLayout
+i18nRecordValid = CABIOk i18nRecordLayout ?i18nFieldsAligned
 
 --------------------------------------------------------------------------------
 -- Offset Calculation

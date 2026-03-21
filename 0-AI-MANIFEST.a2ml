@@ -1,19 +1,26 @@
-# ⚠️ STOP - CRITICAL READING REQUIRED
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# STOP - CRITICAL READING REQUIRED
 
 **THIS FILE MUST BE READ FIRST BY ALL AI AGENTS**
 
 ## WHAT IS THIS?
 
-This is the AI manifest for **[YOUR-REPO-NAME]**. It declares:
+This is the AI manifest for **wokelangiser**. It declares:
 - Canonical file locations (where things MUST be, and nowhere else)
 - Critical invariants (rules that must NEVER be violated)
 - Repository structure and organization
+
+**wokelangiser** adds consent patterns, accessibility annotations,
+internationalisation hooks, and cultural sensitivity markers to existing
+code via WokeLang. It is part of the hyperpolymath -iser family.
 
 ## CANONICAL LOCATIONS (UNIVERSAL RULE)
 
 ### Machine-Readable Metadata: `.machine_readable/` ONLY
 
-These 6 a2ml files MUST exist in `.machine_readable/` directory ONLY:
+These 6 a2ml files MUST exist in `.machine_readable/6a2/` directory ONLY:
 1. **STATE.a2ml** - Project state, progress, blockers
 2. **META.a2ml** - Architecture decisions, governance
 3. **ECOSYSTEM.a2ml** - Position in ecosystem, relationships
@@ -55,7 +62,7 @@ Policy enforcement contracts (k9, dust, lust, must, trust).
 ### AI Configuration & Guides: `.machine_readable/ai/` ONLY
 
 - `AI.a2ml` - Language-specific or LLM-specific patterns
-- `PLACEHOLDERS.md` - Bootstrap guide
+- `PLACEHOLDERS.adoc` - Bootstrap guide
 
 ### Community & Forge Metadata: `.github/` ONLY
 
@@ -70,6 +77,29 @@ Policy enforcement contracts (k9, dust, lust, must, trust).
 
 - `0-AI-MANIFEST.a2ml` - THIS FILE (universal entry point)
 
+## DOMAIN-SPECIFIC CONTEXT
+
+### WokeLang Decorators
+
+Wokelangiser processes four decorator families:
+- `@consent` — opt-in/opt-out/withdraw/audit-trail for GDPR-compliant data handling
+- `@accessible` — WCAG 2.2 levels A/AA/AAA with ARIA, contrast, focus annotations
+- `@i18n` — locale binding, RTL, pluralisation, date/number/currency formatting
+- `@sensitive` — cultural region markers, terminology domains, naming conventions
+
+### ABI-FFI Architecture
+
+- **Idris2 ABI** (`src/interface/abi/`): ConsentType, WCAGLevel, I18nHook,
+  CulturalContext, AccessibilityAnnotation — with formal proofs of correctness
+- **Zig FFI** (`src/interface/ffi/`): consent injection, accessibility checking,
+  contrast ratio calculation, i18n extraction, sensitivity analysis
+- **Rust CLI** (`src/main.rs`): manifest parsing, pipeline orchestration
+
+### Consent State Machine
+
+Pending -> Granted -> Active -> Revoked (with Granted -> Revoked shortcut).
+All transitions formally verified in Types.idr via ValidTransition proofs.
+
 ## CORE INVARIANTS
 
 1. **No state file duplication** - Root must NOT contain STATE.a2ml, META.a2ml, etc.
@@ -80,41 +110,47 @@ Policy enforcement contracts (k9, dust, lust, must, trust).
 6. **Container images** - MUST use Chainguard base (`cgr.dev/chainguard/wolfi-base:latest` or `cgr.dev/chainguard/static:latest`)
 7. **Container runtime** - Podman, never Docker. Files are `Containerfile`, never `Dockerfile`
 8. **Container orchestration** - `selur-compose`, never `docker-compose`
+9. **ABI types match FFI** - ConsentRecord (24B), AccessibilityRecord (32B), I18nRecord (24B) sizes must match between Idris2 Layout.idr and Zig main.zig
 
 ## REPOSITORY STRUCTURE
 
-This repo follows the **Dual-Track** architecture:
-
 ```
-[YOUR-REPO-NAME]/
+wokelangiser/
 ├── 0-AI-MANIFEST.a2ml         # THIS FILE (start here)
-├── README.adoc                 # High-level orientation (Rich Human)
-├── ROADMAP.adoc                # Future direction
+├── README.adoc                 # Consent/accessibility wrapping overview
+├── ROADMAP.adoc                # Phase 0-6 with consent/a11y milestones
 ├── CONTRIBUTING.adoc           # Human contribution guide
-├── GOVERNANCE.adoc             # Decision-making model
 ├── Justfile                    # Task runner
+├── Cargo.toml                  # Rust CLI package
 ├── Containerfile               # OCI build
-├── LICENSE                     # Primary license
+├── LICENSE                     # PMPL-1.0-or-later
 ├── src/                        # Source code
+│   ├── main.rs                 # CLI entry point
+│   ├── lib.rs                  # Library entry point
+│   ├── manifest/               # wokelangiser.toml parser
+│   ├── codegen/                # Target language code generation
+│   ├── abi/                    # Rust-side ABI module
 │   └── interface/              # Verified Interface Seams
-│       ├── abi/                # Idris2 ABI (The Spec)
-│       ├── ffi/                # Zig FFI (The Bridge)
-│       └── generated/          # C Headers (The Result)
-├── container/                  # Stapeln container ecosystem
-├── docs/                       # Technical depths
-│   ├── attribution/            # Citations, owners, maintainers (adoc)
-│   ├── architecture/           # Topology, diagrams
-│   ├── theory/                 # Domain theory
-│   └── practice/               # Manuals
-├── docs/legal/                  # Legal exhibits and full texts
+│       ├── abi/                # Idris2 ABI (consent, a11y, i18n types)
+│       │   ├── Types.idr       # ConsentType, WCAGLevel, I18nHook, CulturalContext
+│       │   ├── Layout.idr      # Memory layouts for FFI records
+│       │   └── Foreign.idr     # FFI function declarations
+│       ├── ffi/                # Zig FFI (C-ABI bridge)
+│       │   ├── build.zig
+│       │   ├── src/main.zig    # Consent/a11y/i18n implementations
+│       │   └── test/           # Integration tests
+│       └── generated/          # Auto-generated C headers
+├── docs/                       # Technical documentation
 └── .machine_readable/          # ALL machine-readable metadata
+    └── 6a2/                    # STATE, META, ECOSYSTEM, AGENTIC, NEUROSYM, PLAYBOOK
 ```
 
 ## SESSION STARTUP CHECKLIST
 
-✅ Read THIS file (0-AI-MANIFEST.a2ml) first
-✅ Understand canonical location: `.machine_readable/`
-✅ State understanding of canonical locations
+Read THIS file (0-AI-MANIFEST.a2ml) first
+Understand canonical location: `.machine_readable/`
+State understanding of canonical locations
+Read .machine_readable/6a2/STATE.a2ml for current project state
 
 ## ATTESTATION PROOF
 

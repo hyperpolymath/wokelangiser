@@ -6,21 +6,26 @@
   (version "0.1.0")
   (name "wokelangiser")
   (type "tool")
-  (purpose "Add consent patterns and accessibility via WokeLang")
+  (purpose "Add consent patterns, accessibility annotations, i18n hooks, and cultural sensitivity markers to existing code via WokeLang")
 
   (position-in-ecosystem
     (family "-iser acceleration frameworks")
     (meta-framework "iseriser")
     (relationship "sibling")
+    (domain "inclusive-software")
     (top-3 ("typedqliser" "chapeliser" "verisimiser")))
 
   (related-projects
     (project "iseriser"
       (relationship "meta-framework")
       (description "Generates new -iser project scaffolding"))
+    (project "wokelang"
+      (relationship "target-language")
+      (description "WokeLang: nextgen language for inclusive software with consent, accessibility, i18n, and cultural sensitivity constructs")
+      (monorepo "nextgen-languages"))
     (project "typedqliser"
       (relationship "sibling-priority-1")
-      (description "Formal type safety for any query language"))
+      (description "Formal type safety for any query language — could use wokelangiser for accessible query UIs"))
     (project "chapeliser"
       (relationship "sibling-priority-2")
       (description "Chapel distributed computing acceleration"))
@@ -32,7 +37,13 @@
       (description "Database recovery via constraint propagation"))
     (project "proven"
       (relationship "dependency")
-      (description "Shared Idris2 verified library"))
+      (description "Shared Idris2 verified library — consent proofs may move here"))
     (project "typell"
       (relationship "dependency")
-      (description "Type theory engine"))))
+      (description "Type theory engine"))
+    (project "panll"
+      (relationship "consumer")
+      (description "PanLL panel framework — consent dashboard and accessibility audit panels"))
+    (project "boj-server"
+      (relationship "consumer")
+      (description "BoJ MCP server — wokelangiser cartridge for automated accessibility scanning"))))

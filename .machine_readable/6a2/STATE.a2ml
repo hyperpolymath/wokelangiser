@@ -5,31 +5,34 @@
 (state
   (metadata
     (version "0.1.0")
-    (last-updated "2026-03-20")
+    (last-updated "2026-03-21")
     (author "Jonathan D.A. Jewell"))
 
   (project-context
     (name "wokelangiser")
-    (description "Add consent patterns and accessibility via WokeLang")
-    (status "scaffold")
+    (description "Add consent patterns, accessibility annotations, i18n hooks, and cultural sensitivity markers to existing code via WokeLang")
+    (status "scaffold-documented")
     (priority "—")
     (ecosystem "-iser family (https://github.com/hyperpolymath/iseriser)"))
 
   (current-position
-    (phase "initial-scaffold")
-    (completion-percentage 5)
-    (milestone "Architecture defined, CLI scaffolded, RSR template complete"))
+    (phase "scaffold-with-bespoke-abi")
+    (completion-percentage 15)
+    (milestone "Bespoke Idris2 ABI types (ConsentType, WCAGLevel, I18nHook, CulturalContext) defined; Zig FFI with consent state machine, contrast ratio calculator, and domain-specific operations implemented; documentation complete"))
 
   (route-to-mvp
-    (step 1 "Replace codegen stubs with target-language-specific generation")
-    (step 2 "Implement Idris2 ABI proofs for core invariants")
-    (step 3 "Build Zig FFI bridge")
-    (step 4 "Integration tests with real-world examples")
-    (step 5 "Documentation and examples"))
+    (step 1 "Implement source analysis: detect user-facing strings, forms, destructive operations")
+    (step 2 "Build consent injection codegen: @consent decorator insertion into target AST")
+    (step 3 "Build accessibility annotation codegen: @accessible with ARIA/contrast/focus")
+    (step 4 "Build i18n extraction: hardcoded string -> locale bundle generation")
+    (step 5 "Build cultural sensitivity checker: term database and alternative suggestions")
+    (step 6 "End-to-end example: Flask app with GDPR consent + WCAG AA + 3-locale i18n")
+    (step 7 "Integration tests with real-world codebases"))
 
   (blockers-and-issues
-    (none "Project is in scaffold phase — no blockers yet"))
+    (none "Project is in documented scaffold phase — no blockers yet"))
 
   (critical-next-actions
-    (action "Implement codegen for primary use case")
-    (action "Write first working example end-to-end")))
+    (action "Implement source analysis for consent point detection")
+    (action "Build first end-to-end example (Flask app with cookie consent)")
+    (action "Wire Zig FFI consent_check into Rust CLI pipeline")))
