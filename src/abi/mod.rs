@@ -64,6 +64,7 @@ impl ConsentCategory {
     /// Parse a category string into a ConsentCategory variant.
     /// Recognised strings: "analytics", "marketing", "functional".
     /// Anything else becomes Custom.
+    #[allow(clippy::should_implement_trait)]
     pub fn from_str(s: &str) -> Self {
         match s.to_lowercase().as_str() {
             "analytics" => ConsentCategory::Analytics,
@@ -119,6 +120,7 @@ pub enum WCAGLevel {
 
 impl WCAGLevel {
     /// Parse a WCAG level string. Accepts "A", "AA", "AAA" (case-insensitive).
+    #[allow(clippy::should_implement_trait)]
     pub fn from_str(s: &str) -> Option<Self> {
         match s.to_uppercase().as_str() {
             "A" => Some(WCAGLevel::A),
@@ -312,30 +314,57 @@ impl ComplianceReport {
 
     /// Return the count of findings at each severity level.
     pub fn summary(&self) -> (usize, usize, usize) {
-        let errors = self.findings.iter().filter(|f| f.severity == Severity::Error).count();
-        let warnings = self.findings.iter().filter(|f| f.severity == Severity::Warning).count();
-        let infos = self.findings.iter().filter(|f| f.severity == Severity::Info).count();
+        let errors = self
+            .findings
+            .iter()
+            .filter(|f| f.severity == Severity::Error)
+            .count();
+        let warnings = self
+            .findings
+            .iter()
+            .filter(|f| f.severity == Severity::Warning)
+            .count();
+        let infos = self
+            .findings
+            .iter()
+            .filter(|f| f.severity == Severity::Info)
+            .count();
         (errors, warnings, infos)
     }
 
     /// Format the report as plain text.
     pub fn to_text(&self) -> String {
         let mut out = String::new();
-        out.push_str(&format!("=== Compliance Report: {} ===\n", self.project_name));
+        out.push_str(&format!(
+            "=== Compliance Report: {} ===\n",
+            self.project_name
+        ));
         out.push_str(&format!("WCAG Level: {:?}\n", self.wcag_level));
         out.push_str(&format!("Consent gates: {}\n", self.consent_gates_count));
-        out.push_str(&format!("Accessibility violations: {}\n", self.accessibility_violations_count));
+        out.push_str(&format!(
+            "Accessibility violations: {}\n",
+            self.accessibility_violations_count
+        ));
         out.push_str(&format!("I18n strings: {}\n", self.i18n_strings_count));
         let (errors, warnings, infos) = self.summary();
-        out.push_str(&format!("Findings: {} errors, {} warnings, {} info\n", errors, warnings, infos));
-        out.push_str(&format!("Result: {}\n\n", if self.passes { "PASS" } else { "FAIL" }));
+        out.push_str(&format!(
+            "Findings: {} errors, {} warnings, {} info\n",
+            errors, warnings, infos
+        ));
+        out.push_str(&format!(
+            "Result: {}\n\n",
+            if self.passes { "PASS" } else { "FAIL" }
+        ));
         for finding in &self.findings {
             let loc = match (&finding.file, finding.line) {
                 (Some(f), Some(l)) => format!("{}:{}", f, l),
                 (Some(f), None) => f.clone(),
                 _ => "unknown".to_string(),
             };
-            out.push_str(&format!("[{:?}] [{}] {} ({})\n", finding.severity, finding.category, finding.message, loc));
+            out.push_str(&format!(
+                "[{:?}] [{}] {} ({})\n",
+                finding.severity, finding.category, finding.message, loc
+            ));
         }
         out
     }
@@ -369,10 +398,22 @@ mod tests {
 
     #[test]
     fn test_consent_category_parsing() {
-        assert_eq!(ConsentCategory::from_str("analytics"), ConsentCategory::Analytics);
-        assert_eq!(ConsentCategory::from_str("MARKETING"), ConsentCategory::Marketing);
-        assert_eq!(ConsentCategory::from_str("functional"), ConsentCategory::Functional);
-        assert_eq!(ConsentCategory::from_str("telemetry"), ConsentCategory::Custom("telemetry".to_string()));
+        assert_eq!(
+            ConsentCategory::from_str("analytics"),
+            ConsentCategory::Analytics
+        );
+        assert_eq!(
+            ConsentCategory::from_str("MARKETING"),
+            ConsentCategory::Marketing
+        );
+        assert_eq!(
+            ConsentCategory::from_str("functional"),
+            ConsentCategory::Functional
+        );
+        assert_eq!(
+            ConsentCategory::from_str("telemetry"),
+            ConsentCategory::Custom("telemetry".to_string())
+        );
     }
 
     #[test]

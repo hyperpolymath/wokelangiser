@@ -7,8 +7,8 @@
 
 use tempfile::TempDir;
 use wokelangiser::abi::{
-    ComplianceReport, ConsentCategory, ConsentGate, ConsentState,
-    Finding, Locale, Severity, WCAGLevel,
+    ComplianceReport, ConsentCategory, ConsentGate, ConsentState, Finding, Locale, Severity,
+    WCAGLevel,
 };
 use wokelangiser::manifest;
 
@@ -64,7 +64,10 @@ fn test_init_creates_manifest() {
     manifest::init_manifest(dir_path).expect("init_manifest should succeed");
 
     let manifest_path = dir.path().join("wokelangiser.toml");
-    assert!(manifest_path.exists(), "wokelangiser.toml should be created");
+    assert!(
+        manifest_path.exists(),
+        "wokelangiser.toml should be created"
+    );
 
     // The created manifest should be parseable and valid.
     let m = manifest::load_manifest(manifest_path.to_str().unwrap())
@@ -73,7 +76,10 @@ fn test_init_creates_manifest() {
 
     // Init should fail if manifest already exists.
     let result = manifest::init_manifest(dir_path);
-    assert!(result.is_err(), "init should fail if manifest already exists");
+    assert!(
+        result.is_err(),
+        "init should fail if manifest already exists"
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -110,8 +116,8 @@ fn test_generate_produces_consent_gates() {
     );
     std::fs::write(dir.path().join("wokelangiser.toml"), &manifest_content).unwrap();
 
-    let m = manifest::load_manifest(dir.path().join("wokelangiser.toml").to_str().unwrap())
-        .unwrap();
+    let m =
+        manifest::load_manifest(dir.path().join("wokelangiser.toml").to_str().unwrap()).unwrap();
     manifest::validate(&m).unwrap();
 
     wokelangiser::codegen::generate_all(&m, output_dir.to_str().unwrap())
@@ -119,7 +125,10 @@ fn test_generate_produces_consent_gates() {
 
     // Check that consent gate files were generated.
     assert!(
-        output_dir.join("consent").join("consent_manager.js").exists(),
+        output_dir
+            .join("consent")
+            .join("consent_manager.js")
+            .exists(),
         "consent_manager.js should be generated"
     );
     assert!(
@@ -233,8 +242,8 @@ format = "text"
     );
     std::fs::write(dir.path().join("wokelangiser.toml"), &manifest_content).unwrap();
 
-    let m = manifest::load_manifest(dir.path().join("wokelangiser.toml").to_str().unwrap())
-        .unwrap();
+    let m =
+        manifest::load_manifest(dir.path().join("wokelangiser.toml").to_str().unwrap()).unwrap();
 
     let strings = wokelangiser::codegen::parser::extract_i18n_strings(&m).unwrap();
     assert!(
@@ -252,9 +261,12 @@ format = "text"
 
     // Test locale file generation.
     let output_dir = dir.path().join("output");
-    let locale_files =
-        wokelangiser::codegen::i18n::generate_locale_files(&m, &strings, output_dir.to_str().unwrap())
-            .unwrap();
+    let locale_files = wokelangiser::codegen::i18n::generate_locale_files(
+        &m,
+        &strings,
+        output_dir.to_str().unwrap(),
+    )
+    .unwrap();
     assert_eq!(locale_files.len(), 2); // en-GB + fr-FR
 
     // en-GB should have values, fr-FR should have empty values.
@@ -284,7 +296,10 @@ fn test_consent_state_machine() {
 
     // Initial state should be Pending.
     let state = ConsentState::Pending;
-    assert!(!state.is_allowed(), "Pending should not allow data collection");
+    assert!(
+        !state.is_allowed(),
+        "Pending should not allow data collection"
+    );
 
     // User grants consent.
     let granted = state.transition(true);
@@ -294,7 +309,10 @@ fn test_consent_state_machine() {
     // User revokes consent.
     let revoked = granted.transition(false);
     assert_eq!(revoked, ConsentState::OptOut);
-    assert!(!revoked.is_allowed(), "OptOut should not allow data collection");
+    assert!(
+        !revoked.is_allowed(),
+        "OptOut should not allow data collection"
+    );
 
     // User re-grants consent.
     let re_granted = revoked.transition(true);
@@ -310,7 +328,10 @@ fn test_consent_state_machine() {
         gdpr_required: true,
         ccpa_required: false,
     };
-    assert!(!gate.state.is_allowed(), "Gate in Pending state should block");
+    assert!(
+        !gate.state.is_allowed(),
+        "Gate in Pending state should block"
+    );
 
     // Simulate state transition on the gate.
     let new_state = gate.state.transition(true);
@@ -367,7 +388,10 @@ fn test_all_wcag_levels() {
         file: Some("test.html".to_string()),
         line: Some(1),
     });
-    assert!(!report.passes, "Error-level findings should fail the report");
+    assert!(
+        !report.passes,
+        "Error-level findings should fail the report"
+    );
 
     // Verify all three WCAG levels parse correctly.
     assert_eq!(WCAGLevel::from_str("A"), Some(WCAGLevel::A));
@@ -430,8 +454,14 @@ fn test_consent_category_custom() {
     assert_eq!(custom.name(), "telemetry");
 
     // Standard categories are case-insensitive.
-    assert_eq!(ConsentCategory::from_str("ANALYTICS"), ConsentCategory::Analytics);
-    assert_eq!(ConsentCategory::from_str("Marketing"), ConsentCategory::Marketing);
+    assert_eq!(
+        ConsentCategory::from_str("ANALYTICS"),
+        ConsentCategory::Analytics
+    );
+    assert_eq!(
+        ConsentCategory::from_str("Marketing"),
+        ConsentCategory::Marketing
+    );
 }
 
 #[test]

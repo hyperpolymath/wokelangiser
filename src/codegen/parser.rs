@@ -9,9 +9,7 @@ use anyhow::Result;
 use std::path::Path;
 use walkdir::WalkDir;
 
-use crate::abi::{
-    AccessibilityViolation, ConsentCategory, I18nString, ViolationKind, WCAGLevel,
-};
+use crate::abi::{AccessibilityViolation, ConsentCategory, I18nString, ViolationKind, WCAGLevel};
 use crate::manifest::Manifest;
 
 // ---------------------------------------------------------------------------
@@ -54,11 +52,23 @@ const CONSENT_PATTERNS: &[(&str, &str, &str)] = &[
     ("googletag", "marketing", "Google Ad Manager tag"),
     // Functional patterns
     ("localStorage.setItem", "functional", "Local storage write"),
-    ("sessionStorage.setItem", "functional", "Session storage write"),
+    (
+        "sessionStorage.setItem",
+        "functional",
+        "Session storage write",
+    ),
     ("document.cookie", "functional", "Cookie access"),
     ("navigator.geolocation", "functional", "Geolocation access"),
-    ("navigator.mediaDevices", "functional", "Media device access"),
-    ("Notification.requestPermission", "functional", "Notification permission request"),
+    (
+        "navigator.mediaDevices",
+        "functional",
+        "Media device access",
+    ),
+    (
+        "Notification.requestPermission",
+        "functional",
+        "Notification permission request",
+    ),
 ];
 
 /// Scan all source files in the project for data collection points
@@ -174,7 +184,10 @@ pub fn find_accessibility_issues(
                 }
                 if line.contains(pattern.trigger) && !line.contains(pattern.required_attr) {
                     // For <button>, also check if it has text content (non-self-closing).
-                    if pattern.trigger == "<button" && line.contains(">") && line.contains("</button>") {
+                    if pattern.trigger == "<button"
+                        && line.contains(">")
+                        && line.contains("</button>")
+                    {
                         let after_open = line.split('>').nth(1).unwrap_or("");
                         let text = after_open.split('<').next().unwrap_or("").trim();
                         if !text.is_empty() {
@@ -250,17 +263,20 @@ pub fn extract_i18n_strings(manifest: &Manifest) -> Result<Vec<I18nString>> {
 
             // Extract strings from placeholder="..." and title="..." attributes.
             for attr in &["placeholder=\"", "title=\"", "aria-label=\"", "alt=\""] {
-                if let Some(value) = extract_attribute_value(trimmed, attr) {
-                    if is_translatable(&value) {
-                        key_counter += 1;
-                        strings.push(I18nString {
-                            key: format!("str_{}", key_counter),
-                            default_value: value,
-                            source_file: file_str.clone(),
-                            line: line_num + 1,
-                            context: Some(format!("{} attribute", attr.trim_end_matches('"').trim_end_matches('='))),
-                        });
-                    }
+                if let Some(value) = extract_attribute_value(trimmed, attr)
+                    && is_translatable(&value)
+                {
+                    key_counter += 1;
+                    strings.push(I18nString {
+                        key: format!("str_{}", key_counter),
+                        default_value: value,
+                        source_file: file_str.clone(),
+                        line: line_num + 1,
+                        context: Some(format!(
+                            "{} attribute",
+                            attr.trim_end_matches('"').trim_end_matches('=')
+                        )),
+                    });
                 }
             }
         }

@@ -75,8 +75,7 @@ pub fn generate_locale_files(
 
     // Generate the key manifest with metadata about each extracted string.
     let keys_manifest = generate_keys_manifest(strings);
-    fs::write(i18n_dir.join("keys.json"), &keys_manifest)
-        .context("Failed to write keys.json")?;
+    fs::write(i18n_dir.join("keys.json"), &keys_manifest).context("Failed to write keys.json")?;
 
     println!(
         "  Generated {} locale files with {} keys in {}",
@@ -97,8 +96,7 @@ fn write_locale_json(i18n_dir: &Path, locale_file: &LocaleFile) -> Result<()> {
         .map(|(k, v)| (k.as_str(), v.as_str()))
         .collect();
 
-    let json = serde_json::to_string_pretty(&map)
-        .context("Failed to serialise locale file")?;
+    let json = serde_json::to_string_pretty(&map).context("Failed to serialise locale file")?;
 
     let filename = format!("{}.json", locale_file.locale.tag);
     fs::write(i18n_dir.join(&filename), &json)
@@ -260,8 +258,7 @@ loadLocale(DEFAULT_LOCALE);
         supported = supported.join(", "),
     );
 
-    fs::write(i18n_dir.join("i18n.js"), &module_code)
-        .context("Failed to write i18n.js module")?;
+    fs::write(i18n_dir.join("i18n.js"), &module_code).context("Failed to write i18n.js module")?;
 
     Ok(())
 }
@@ -326,10 +323,7 @@ mod tests {
             accessibility: Default::default(),
             i18n: crate::manifest::I18nConfig {
                 default_locale: "en-GB".to_string(),
-                supported_locales: vec![
-                    "en-GB".to_string(),
-                    "fr-FR".to_string(),
-                ],
+                supported_locales: vec!["en-GB".to_string(), "fr-FR".to_string()],
                 extract_strings: true,
             },
             report: Default::default(),

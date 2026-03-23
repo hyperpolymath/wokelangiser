@@ -7,9 +7,7 @@
 
 use anyhow::Result;
 
-use crate::abi::{
-    AccessibilityViolation, ComplianceReport, Finding, Severity, WCAGLevel,
-};
+use crate::abi::{AccessibilityViolation, ComplianceReport, Finding, Severity, WCAGLevel};
 // ViolationKind is used in tests (via `use super::*`) and in the report generation function.
 #[cfg(test)]
 use crate::abi::ViolationKind;
@@ -108,8 +106,8 @@ pub fn generate_accessibility_report(
     manifest: &Manifest,
     violations: &[AccessibilityViolation],
 ) -> Result<ComplianceReport> {
-    let target_level = WCAGLevel::from_str(&manifest.accessibility.wcag_level)
-        .unwrap_or(WCAGLevel::AA);
+    let target_level =
+        WCAGLevel::from_str(&manifest.accessibility.wcag_level).unwrap_or(WCAGLevel::AA);
 
     let mut report = ComplianceReport::new(&manifest.project.name, target_level);
     report.accessibility_violations_count = violations.len();
@@ -180,10 +178,8 @@ pub fn generate_accessibility_report(
 pub fn format_report(report: &ComplianceReport, format: &str) -> Result<String> {
     match format {
         "text" => Ok(report.to_text()),
-        "json" => {
-            serde_json::to_string_pretty(report)
-                .map_err(|e| anyhow::anyhow!("Failed to serialise report to JSON: {}", e))
-        }
+        "json" => serde_json::to_string_pretty(report)
+            .map_err(|e| anyhow::anyhow!("Failed to serialise report to JSON: {}", e)),
         "a2ml" => Ok(format_report_a2ml(report)),
         _ => anyhow::bail!("Unsupported report format: {}", format),
     }

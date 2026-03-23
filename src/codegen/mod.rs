@@ -34,8 +34,8 @@ pub fn generate_all(manifest: &Manifest, output_dir: &str) -> Result<()> {
     let consent_points = parser::find_consent_points(manifest)?;
     println!("    Found {} consent points", consent_points.len());
 
-    let wcag_level = WCAGLevel::from_str(&manifest.accessibility.wcag_level)
-        .unwrap_or(WCAGLevel::AA);
+    let wcag_level =
+        WCAGLevel::from_str(&manifest.accessibility.wcag_level).unwrap_or(WCAGLevel::AA);
     let accessibility_violations = parser::find_accessibility_issues(manifest, wcag_level)?;
     println!(
         "    Found {} accessibility violations",
@@ -119,8 +119,8 @@ pub fn run(manifest: &Manifest, _args: &[String]) -> Result<()> {
         manifest.project.name
     );
 
-    let wcag_level = WCAGLevel::from_str(&manifest.accessibility.wcag_level)
-        .unwrap_or(WCAGLevel::AA);
+    let wcag_level =
+        WCAGLevel::from_str(&manifest.accessibility.wcag_level).unwrap_or(WCAGLevel::AA);
 
     let consent_points = parser::find_consent_points(manifest)?;
     let violations = parser::find_accessibility_issues(manifest, wcag_level)?;

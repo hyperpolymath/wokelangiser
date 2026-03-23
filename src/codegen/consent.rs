@@ -31,8 +31,12 @@ pub fn generate_consent_gates(
     output_dir: &str,
 ) -> Result<Vec<ConsentGate>> {
     let consent_dir = Path::new(output_dir).join("consent");
-    fs::create_dir_all(&consent_dir)
-        .with_context(|| format!("Failed to create consent output dir: {}", consent_dir.display()))?;
+    fs::create_dir_all(&consent_dir).with_context(|| {
+        format!(
+            "Failed to create consent output dir: {}",
+            consent_dir.display()
+        )
+    })?;
 
     // Build consent gates from the detected consent points.
     let default_state = parse_default_state(&manifest.consent.default_state);
@@ -78,8 +82,7 @@ pub fn generate_consent_gates(
 
     // Generate the individual gate wrapper functions.
     let gates_code = generate_gate_wrappers(&gates);
-    fs::write(consent_dir.join("gates.js"), &gates_code)
-        .context("Failed to write gates.js")?;
+    fs::write(consent_dir.join("gates.js"), &gates_code).context("Failed to write gates.js")?;
 
     // Generate the consent banner HTML template.
     let banner_html = generate_consent_banner(manifest, &gates);
@@ -373,7 +376,13 @@ fn sanitise_filename(path: &str) -> String {
 /// Sanitise a string into a valid JavaScript identifier.
 fn sanitise_identifier(s: &str) -> String {
     s.chars()
-        .map(|c| if c.is_alphanumeric() || c == '_' { c } else { '_' })
+        .map(|c| {
+            if c.is_alphanumeric() || c == '_' {
+                c
+            } else {
+                '_'
+            }
+        })
         .collect()
 }
 
@@ -409,7 +418,10 @@ mod tests {
 
     #[test]
     fn test_sanitise_identifier() {
-        assert_eq!(sanitise_identifier("analytics_pageview_0"), "analytics_pageview_0");
+        assert_eq!(
+            sanitise_identifier("analytics_pageview_0"),
+            "analytics_pageview_0"
+        );
         assert_eq!(sanitise_identifier("gate-name.test"), "gate_name_test");
     }
 

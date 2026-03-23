@@ -190,8 +190,7 @@ impl Default for ReportConfig {
 pub fn load_manifest(path: &str) -> Result<Manifest> {
     let content = std::fs::read_to_string(path)
         .with_context(|| format!("Failed to read manifest: {}", path))?;
-    toml::from_str(&content)
-        .with_context(|| format!("Failed to parse manifest: {}", path))
+    toml::from_str(&content).with_context(|| format!("Failed to parse manifest: {}", path))
 }
 
 /// Validate a parsed manifest for internal consistency.
@@ -236,10 +235,13 @@ pub fn validate(manifest: &Manifest) -> Result<()> {
     }
 
     // If a custom min-contrast-ratio is set, it must be positive.
-    if let Some(ratio) = manifest.accessibility.min_contrast_ratio {
-        if ratio <= 0.0 {
-            anyhow::bail!("accessibility.min-contrast-ratio must be positive, got {}", ratio);
-        }
+    if let Some(ratio) = manifest.accessibility.min_contrast_ratio
+        && ratio <= 0.0
+    {
+        anyhow::bail!(
+            "accessibility.min-contrast-ratio must be positive, got {}",
+            ratio
+        );
     }
 
     // Report format must be text, json, or a2ml.
@@ -252,7 +254,11 @@ pub fn validate(manifest: &Manifest) -> Result<()> {
     }
 
     // Default locale must be in supported locales.
-    if !manifest.i18n.supported_locales.contains(&manifest.i18n.default_locale) {
+    if !manifest
+        .i18n
+        .supported_locales
+        .contains(&manifest.i18n.default_locale)
+    {
         anyhow::bail!(
             "i18n.default-locale '{}' must be listed in i18n.supported-locales",
             manifest.i18n.default_locale
@@ -321,8 +327,14 @@ pub fn print_info(manifest: &Manifest) {
     println!();
     println!("[accessibility]");
     println!("  WCAG level: {}", manifest.accessibility.wcag_level);
-    println!("  Check contrast: {}", manifest.accessibility.check_contrast);
-    println!("  Check alt text: {}", manifest.accessibility.check_alt_text);
+    println!(
+        "  Check contrast: {}",
+        manifest.accessibility.check_contrast
+    );
+    println!(
+        "  Check alt text: {}",
+        manifest.accessibility.check_alt_text
+    );
     println!("  Check ARIA: {}", manifest.accessibility.check_aria);
     if let Some(ratio) = manifest.accessibility.min_contrast_ratio {
         println!("  Min contrast ratio: {}", ratio);
@@ -374,10 +386,7 @@ mod tests {
             },
             i18n: I18nConfig {
                 default_locale: "en-GB".to_string(),
-                supported_locales: vec![
-                    "en-GB".to_string(),
-                    "fr-FR".to_string(),
-                ],
+                supported_locales: vec!["en-GB".to_string(), "fr-FR".to_string()],
                 extract_strings: true,
             },
             report: ReportConfig {
