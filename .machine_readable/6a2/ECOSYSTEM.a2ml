@@ -1,49 +1,20 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
-;; Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
-;; ECOSYSTEM.a2ml — Ecosystem position for wokelangiser
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# ECOSYSTEM.a2ml — Wokelangiser ecosystem position
+[metadata]
+version = "0.1.0"
+last-updated = "2026-04-11"
 
-(ecosystem
-  (version "0.1.0")
-  (name "wokelangiser")
-  (type "tool")
-  (purpose "Add consent patterns, accessibility annotations, i18n hooks, and cultural sensitivity markers to existing code via WokeLang")
+[project]
+name = "Wokelangiser"
+purpose = "Add consent patterns, accessibility annotations, i18n hooks, and cultural sensitivity markers to existing code via WokeLang"
+role = "tool"
 
-  (position-in-ecosystem
-    (family "-iser acceleration frameworks")
-    (meta-framework "iseriser")
-    (relationship "sibling")
-    (domain "inclusive-software")
-    (top-3 ("typedqliser" "chapeliser" "verisimiser")))
+[position-in-ecosystem]
+category = ""
 
-  (related-projects
-    (project "iseriser"
-      (relationship "meta-framework")
-      (description "Generates new -iser project scaffolding"))
-    (project "wokelang"
-      (relationship "target-language")
-      (description "WokeLang: nextgen language for inclusive software with consent, accessibility, i18n, and cultural sensitivity constructs")
-      (monorepo "nextgen-languages"))
-    (project "typedqliser"
-      (relationship "sibling-priority-1")
-      (description "Formal type safety for any query language — could use wokelangiser for accessible query UIs"))
-    (project "chapeliser"
-      (relationship "sibling-priority-2")
-      (description "Chapel distributed computing acceleration"))
-    (project "verisimiser"
-      (relationship "sibling-priority-3")
-      (description "VeriSimDB octad database augmentation"))
-    (project "squeakwell"
-      (relationship "sibling")
-      (description "Database recovery via constraint propagation"))
-    (project "proven"
-      (relationship "dependency")
-      (description "Shared Idris2 verified library — consent proofs may move here"))
-    (project "typell"
-      (relationship "dependency")
-      (description "Type theory engine"))
-    (project "panll"
-      (relationship "consumer")
-      (description "PanLL panel framework — consent dashboard and accessibility audit panels"))
-    (project "boj-server"
-      (relationship "consumer")
-      (description "BoJ MCP server — wokelangiser cartridge for automated accessibility scanning"))))
+[related-projects]
+projects = [
+  # No related projects recorded
+]
