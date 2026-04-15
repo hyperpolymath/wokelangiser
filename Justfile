@@ -2,6 +2,8 @@
 # wokelangiser — consent patterns, accessibility, i18n hooks via WokeLang
 
 # Default: build and test
+import? "contractile.just"
+
 default: build test
 
 # Build release binary
