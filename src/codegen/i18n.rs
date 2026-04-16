@@ -311,8 +311,8 @@ mod tests {
 
     #[test]
     fn test_locale_file_generation() {
-        let dir = tempfile::tempdir().unwrap();
-        let output_dir = dir.path().to_str().unwrap();
+        let dir = tempfile::tempdir().expect("TODO: handle error");
+        let output_dir = dir.path().to_str().expect("TODO: handle error");
 
         let manifest = crate::manifest::Manifest {
             project: crate::manifest::ProjectConfig {
@@ -337,17 +337,17 @@ mod tests {
             context: None,
         }];
 
-        let files = generate_locale_files(&manifest, &strings, output_dir).unwrap();
+        let files = generate_locale_files(&manifest, &strings, output_dir).expect("TODO: handle error");
         assert_eq!(files.len(), 2); // en-GB + fr-FR
 
         // Check that the default locale file has the value.
         let en_path = dir.path().join("i18n").join("en-GB.json");
-        let en_content = std::fs::read_to_string(en_path).unwrap();
+        let en_content = std::fs::read_to_string(en_path).expect("TODO: handle error");
         assert!(en_content.contains("Hello"));
 
         // Check that the fr-FR file has empty values.
         let fr_path = dir.path().join("i18n").join("fr-FR.json");
-        let fr_content = std::fs::read_to_string(fr_path).unwrap();
+        let fr_content = std::fs::read_to_string(fr_path).expect("TODO: handle error");
         assert!(fr_content.contains("str_1"));
         // The value should be empty string.
         assert!(fr_content.contains("\"str_1\": \"\""));

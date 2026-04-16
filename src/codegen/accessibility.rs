@@ -356,7 +356,7 @@ mod tests {
             criterion: "1.1.1".to_string(),
         }];
 
-        let report = generate_accessibility_report(&manifest, &violations).unwrap();
+        let report = generate_accessibility_report(&manifest, &violations).expect("TODO: handle error");
         assert!(!report.passes); // should fail due to error-level violation
         assert_eq!(report.accessibility_violations_count, 1);
     }
@@ -364,7 +364,7 @@ mod tests {
     #[test]
     fn test_format_report_text() {
         let report = ComplianceReport::new("test", WCAGLevel::AA);
-        let text = format_report(&report, "text").unwrap();
+        let text = format_report(&report, "text").expect("TODO: handle error");
         assert!(text.contains("test"));
         assert!(text.contains("PASS"));
     }
@@ -372,14 +372,14 @@ mod tests {
     #[test]
     fn test_format_report_json() {
         let report = ComplianceReport::new("test", WCAGLevel::AA);
-        let json = format_report(&report, "json").unwrap();
+        let json = format_report(&report, "json").expect("TODO: handle error");
         assert!(json.contains("\"project_name\""));
     }
 
     #[test]
     fn test_format_report_a2ml() {
         let report = ComplianceReport::new("test", WCAGLevel::AA);
-        let a2ml = format_report(&report, "a2ml").unwrap();
+        let a2ml = format_report(&report, "a2ml").expect("TODO: handle error");
         assert!(a2ml.contains("(compliance-report"));
         assert!(a2ml.contains("(project \"test\")"));
     }
