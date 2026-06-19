@@ -131,4 +131,4 @@ Contrast ratio calculated using WCAG 2.2 relative luminance algorithm
 | PanLL        | Consent dashboard + accessibility audit panels     |
 | BoJ-server   | Cartridge for automated accessibility scanning     |
 | VeriSimDB    | Consent audit trail persistence                    |
-| WokeLang     | Source language in nextgen-languages monorepo       |
+| WokeLang     | The specialist language wokelangiser bridges *other* code to (injects WokeLang's consent/accessibility patterns at the source level). Standalone repo: hyperpolymath/wokelang — you don't run wokelangiser on WokeLang itself |
