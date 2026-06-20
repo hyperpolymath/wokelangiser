@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 = Wokelangiser
 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
@@ -129,4 +129,17 @@ consent/accessibility/i18n defined, Zig FFI bridge templated, codegen pending.
 
 == License
 
-SPDX-License-Identifier: MPL-2.0
+This project is *dual-licensed*:
+
+* *Source code, configuration, CI, scripts, and machine-readable state* are under the
+  Mozilla Public License 2.0 (`MPL-2.0`) — link:LICENSE[LICENSE] /
+  link:LICENSES/MPL-2.0.txt[LICENSES/MPL-2.0.txt].
+* *Documentation and prose content* (`+*.adoc+`, `+*.md+`, `docs/**`) are under the
+  Creative Commons Attribution-ShareAlike 4.0 International licence (`CC-BY-SA-4.0`) —
+  link:LICENSES/CC-BY-SA-4.0.txt[LICENSES/CC-BY-SA-4.0.txt].
+
+Each file's `SPDX-License-Identifier` header is authoritative; the file-to-licence
+mapping is recorded (REUSE) in
+link:.machine_readable/compliance/reuse/dep5[`dep5`]. The repository as a whole is
+"`MPL-2.0 AND CC-BY-SA-4.0`"; GitHub reports *MPL-2.0* as the primary licence. See
+link:docs/decisions/0002-licensing-policy.adoc[ADR-0002] for the full policy.

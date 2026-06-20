@@ -33,8 +33,8 @@ is traceable.
 - severity: warning
 
 ### license-content
-- description: LICENSE contains PMPL identifier
-- run: grep -q 'PMPL' LICENSE
+- description: LICENSE declares MPL-2.0 and both REUSE licence texts are present
+- run: grep -q 'MPL-2.0' LICENSE && test -f LICENSES/MPL-2.0.txt && test -f LICENSES/CC-BY-SA-4.0.txt
 - severity: warning
 
 ### ci-pipeline-present
