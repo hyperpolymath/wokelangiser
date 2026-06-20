@@ -5,10 +5,14 @@
 # Detects your shell, platform, and installs prerequisites.
 # Then hands off to `just setup` for project-specific configuration.
 #
-# Usage:
-#   curl -fsSL https://raw.githubusercontent.com/hyperpolymath/wokelangiser/main/setup.sh | sh
-#   # or after cloning:
+# Usage (recommended — download, review, then run; don't pipe straight to a shell):
+#   curl -fsSL https://raw.githubusercontent.com/hyperpolymath/wokelangiser/main/setup.sh -o setup.sh
+#   less setup.sh        # review before running
+#   sh setup.sh
+#   # …or after cloning:
 #   ./setup.sh
+#   # Convenience one-liner (review the script first — you are trusting the network):
+#   curl -fsSL https://raw.githubusercontent.com/hyperpolymath/wokelangiser/main/setup.sh | sh
 #
 # Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath)
 
@@ -128,6 +132,86 @@ detect_platform() {
     esac
 }
 
+# ── Verified install of just (pinned version + SHA256; avoids curl|sh, CWE-494) ──
+# Bump JUST_VERSION and the four SHA256 values together from:
+#   https://github.com/casey/just/releases  (each release publishes SHA256SUMS)
+install_just_pinned() {
+    JUST_VERSION="1.53.0"
+
+    # Map platform/arch -> just release target triple + that tarball's SHA256.
+    just_target=""
+    just_sha256=""
+    case "$OS:$ARCH" in
+        linux:x86_64|linux:amd64)
+            just_target="x86_64-unknown-linux-musl"
+            just_sha256="7fedeb22c7e14d9ef1551e8b793700866d80f409f9884b0e80ebb65c11d4874d" ;;
+        linux:aarch64|linux:arm64)
+            just_target="aarch64-unknown-linux-musl"
+            just_sha256="f29d8e72380bc144465f632c7d59da311205eef2923d57511708b05b82f2e64f" ;;
+        macos:x86_64|macos:amd64)
+            just_target="x86_64-apple-darwin"
+            just_sha256="bc345a26d40ae4697cb6b2f2ca04cdf1fbdc8c50eba1b40684c8bf3f98555d72" ;;
+        macos:arm64|macos:aarch64)
+            just_target="aarch64-apple-darwin"
+            just_sha256="27f1361f2e4fb5d733837f1a9f80f85c237e5a36c75ee14961e59141713aa4ed" ;;
+        *)
+            fail "No pinned 'just' build for $OS/$ARCH — install manually: https://just.systems/"
+            return 1 ;;
+    esac
+
+    # Need a checksum tool (Linux: sha256sum, macOS: shasum -a 256).
+    if ! command -v sha256sum >/dev/null 2>&1 && ! command -v shasum >/dev/null 2>&1; then
+        fail "Need sha256sum or shasum to verify the download — install one, or get just manually: https://just.systems/"
+        return 1
+    fi
+
+    just_tarball="just-${JUST_VERSION}-${just_target}.tar.gz"
+    just_url="https://github.com/casey/just/releases/download/${JUST_VERSION}/${just_tarball}"
+
+    info "Installing just ${JUST_VERSION} (${just_target}): download, verify SHA256, then install"
+
+    tmpdir=$(mktemp -d 2>/dev/null) || { fail "Could not create temp dir"; return 1; }
+
+    # 1) Download over HTTPS to a file (no pipe-to-shell).
+    if ! curl -fsSL "$just_url" -o "${tmpdir}/${just_tarball}"; then
+        fail "Download failed: $just_url"
+        rm -rf "$tmpdir"; return 1
+    fi
+
+    # 2) Verify integrity BEFORE touching the contents (this is the CWE-494 fix).
+    if command -v sha256sum >/dev/null 2>&1; then
+        actual_sha=$(sha256sum "${tmpdir}/${just_tarball}" | awk '{print $1}')
+    else
+        actual_sha=$(shasum -a 256 "${tmpdir}/${just_tarball}" | awk '{print $1}')
+    fi
+    if [ "$actual_sha" != "$just_sha256" ]; then
+        fail "Checksum mismatch for ${just_tarball} — refusing to install"
+        fail "  expected: $just_sha256"
+        fail "  actual:   $actual_sha"
+        rm -rf "$tmpdir"; return 1
+    fi
+    ok "Checksum verified (SHA256)"
+
+    # 3) Extract only the verified binary and install it.
+    if ! tar -xzf "${tmpdir}/${just_tarball}" -C "$tmpdir" just; then
+        fail "Could not extract just from ${just_tarball}"
+        rm -rf "$tmpdir"; return 1
+    fi
+
+    if [ -w /usr/local/bin ]; then
+        cp "${tmpdir}/just" /usr/local/bin/just && chmod 0755 /usr/local/bin/just
+    else
+        sudo cp "${tmpdir}/just" /usr/local/bin/just && sudo chmod 0755 /usr/local/bin/just
+    fi
+    rc=$?
+
+    rm -rf "$tmpdir"
+    if [ "$rc" -ne 0 ]; then
+        fail "Could not install just to /usr/local/bin"
+        return 1
+    fi
+}
+
 # ── Install just ──
 install_just() {
     if command -v just >/dev/null 2>&1; then
@@ -139,10 +223,7 @@ install_just() {
 
     case "$PKG_MGR" in
         dnf)        sudo dnf install -y just ;;
-        apt)        sudo apt-get install -y just 2>/dev/null || {
-                        # just not in older apt repos — use installer
-                        curl -fsSL https://just.systems/install.sh | bash -s -- --to /usr/local/bin
-                    } ;;
+        apt)        sudo apt-get install -y just 2>/dev/null || install_just_pinned ;;
         pacman)     sudo pacman -S --noconfirm just ;;
         apk)        sudo apk add just ;;
         brew)       brew install just ;;
@@ -151,10 +232,7 @@ install_just() {
         rpm-ostree) sudo rpm-ostree install just ;;
         guix)       guix install just ;;
         nix)        nix-env -iA nixpkgs.just ;;
-        *)
-            info "Using just installer script..."
-            curl -fsSL https://just.systems/install.sh | bash -s -- --to /usr/local/bin
-            ;;
+        *)          install_just_pinned ;;
     esac
 
     if command -v just >/dev/null 2>&1; then
