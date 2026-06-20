@@ -11,8 +11,6 @@
 #   sh setup.sh
 #   # …or after cloning:
 #   ./setup.sh
-#   # Convenience one-liner (review the script first — you are trusting the network):
-#   curl -fsSL https://raw.githubusercontent.com/hyperpolymath/wokelangiser/main/setup.sh | sh
 #
 # Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath)
 
@@ -132,7 +130,7 @@ detect_platform() {
     esac
 }
 
-# ── Verified install of just (pinned version + SHA256; avoids curl|sh, CWE-494) ──
+# ── Verified install of just (pinned version + SHA256; no pipe-to-shell, CWE-494) ──
 # Bump JUST_VERSION and the four SHA256 values together from:
 #   https://github.com/casey/just/releases  (each release publishes SHA256SUMS)
 install_just_pinned() {
