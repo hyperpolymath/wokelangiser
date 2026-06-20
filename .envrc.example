@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: MPL-2.0
+# .envrc.example — template for optional local direnv overrides.
+#
+# Do NOT put real secrets in this tracked file or in .envrc. Instead, copy the
+# lines you need into a local, gitignored .env (loaded by `dotenv_if_exists`
+# in .envrc) and fill in real values there.
+
+# export DATABASE_URL="postgres://USER:PASSWORD@HOST:5432/DBNAME"
+# export API_KEY="replace-with-your-own-value"
