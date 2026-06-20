@@ -15,8 +15,15 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # Presence-gate: `secrets` can't be referenced directly in `if:`, so the
+    # token is mapped to a job-level env var the steps guard on. On forks
+    # (where FARM_DISPATCH_TOKEN is unset) the dispatch is skipped instead of
+    # firing with an empty token.
+    env:
+      FARM_DISPATCH_TOKEN: ${{ secrets.FARM_DISPATCH_TOKEN }}
     steps:
       - name: Trigger Propagation
+        if: ${{ env.FARM_DISPATCH_TOKEN != '' }}
         uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v3
         with:
           token: ${{ secrets.FARM_DISPATCH_TOKEN }}
@@ -31,4 +38,5 @@ jobs:
             }
 
       - name: Confirm
+        if: ${{ env.FARM_DISPATCH_TOKEN != '' }}
         run: echo "::notice::Propagation triggered for ${{ github.event.repository.name }}"
