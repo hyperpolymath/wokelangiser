@@ -12,5 +12,13 @@ permissions: read-all
 
 jobs:
   analysis:
+    # Least-privilege scopes for the OpenSSF Scorecard reusable workflow
+    # (was inheriting the top-level read-all, which can't grant the writes
+    # publishing needs). Caps what the reusable workflow can request.
+    permissions:
+      contents: read
+      security-events: write
+      id-token: write
+      actions: read
     uses: hyperpolymath/standards/.github/workflows/scorecard-reusable.yml@e0caf11508a3989574713c78f5f444f2ce5e33ef
     secrets: inherit
