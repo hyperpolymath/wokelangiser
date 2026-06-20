@@ -7,13 +7,13 @@ uuid = "1c233dc2-7b7e-5856-9606-22f119ed68ad"
 primary-forge = "github"
 primary-owner = "hyperpolymath"
 canonical-name = "wokelangiser"
-prefixed-name = "rm-wokelangiser"
+prefixed-name = "dx-wokelangiser"
 
 [clade]
-primary = "rm"
+primary = "dx"
 secondary = ["gv"]
-assigned = "2026-03-16"
-rationale = ""
+assigned = "2026-06-20"
+rationale = "Developer-facing -iser adapter: injects WokeLang consent/accessibility patterns into target codebases. dx (Developer Ecosystem) per gv-clade-index."
 
 [forges]
 github = "hyperpolymath/wokelangiser"
