@@ -3,7 +3,7 @@
 # See: https://github.com/hyperpolymath/gv-clade-index
 
 [identity]
-uuid = "a5ea1382-a34c-5334-8a46-a2ebe904c810"
+uuid = "1c233dc2-7b7e-5856-9606-22f119ed68ad"
 primary-forge = "github"
 primary-owner = "hyperpolymath"
 canonical-name = "wokelangiser"
