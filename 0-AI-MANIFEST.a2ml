@@ -105,7 +105,7 @@ All transitions formally verified in Types.idr via ValidTransition proofs.
 1. **No state file duplication** - Root must NOT contain STATE.a2ml, META.a2ml, etc.
 2. **Single source of truth** - `.machine_readable/` is authoritative
 3. **No stale metadata** - If root state files exist, they are OUT OF DATE
-4. **License consistency** - All code MPL-2.0 unless platform requires MPL-2.0
+4. **License consistency** - Code/config/CI: MPL-2.0; documentation/prose (*.adoc, *.md, docs/**): CC-BY-SA-4.0; both full texts in LICENSES/. Per-file SPDX headers are authoritative.
 5. **Author attribution** - Always "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"
 6. **Container images** - MUST use Chainguard base (`cgr.dev/chainguard/wolfi-base:latest` or `cgr.dev/chainguard/static:latest`)
 7. **Container runtime** - Podman, never Docker. Files are `Containerfile`, never `Dockerfile`

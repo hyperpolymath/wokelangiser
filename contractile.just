@@ -33,7 +33,7 @@ intend-list:
 # Source: Mustfile.a2ml
 
 # Run all must checks
-must-check: must-license-present must-readme-present must-spdx-headers must-no-banned-files
+must-check: must-license-present must-readme-present must-spdx-headers must-no-banned-files must-no-pmpl must-licenses-present must-docs-cc-by-sa
     @echo 'All must checks passed'
 
 # LICENSE file must exist
@@ -52,6 +52,18 @@ must-spdx-headers:
 must-no-banned-files:
     test ! -f Dockerfile && test ! -f Makefile
 
+# No superseded licence identifiers (project is MPL-2.0 + CC-BY-SA-4.0)
+must-no-pmpl:
+    ! grep -rniI 'palimpsest\|pmpl' . --exclude-dir=.git --exclude-dir=contractiles --exclude='*.just' --exclude=dep5 --exclude=0002-licensing-policy.adoc | head -1 | grep -q .
+
+# Both REUSE licence texts present
+must-licenses-present:
+    test -f LICENSES/MPL-2.0.txt && test -f LICENSES/CC-BY-SA-4.0.txt
+
+# Docs (*.adoc / *.md) carry the CC-BY-SA-4.0 SPDX header
+must-docs-cc-by-sa:
+    ! git ls-files '*.adoc' '*.md' | xargs grep -L 'SPDX-License-Identifier: CC-BY-SA-4.0' 2>/dev/null | head -1 | grep -q .
+
 
 # === TRUST (Integrity & Provenance Verification) ===
 # Source: Trustfile.a2ml
@@ -60,9 +72,9 @@ must-no-banned-files:
 trust-verify: trust-license-content trust-no-secrets-committed trust-container-images-pinned
     @echo 'All trust verifications passed'
 
-# LICENSE contains expected SPDX identifier
+# LICENSE declares MPL-2.0 and both REUSE licence texts exist
 trust-license-content:
-    grep -q 'SPDX\|License\|MIT\|Apache\|PMPL\|MPL' LICENSE
+    grep -q 'MPL-2.0' LICENSE && test -f LICENSES/MPL-2.0.txt && test -f LICENSES/CC-BY-SA-4.0.txt
 
 # No .env or credential files in repo
 trust-no-secrets-committed:

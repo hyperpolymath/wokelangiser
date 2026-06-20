@@ -4,7 +4,7 @@
 # Reads root-hygiene rules and auto-fixes what it can:
 #   - Delete banned files (AI.djot, duplicate CONTRIBUTING.adoc, stale snapshots)
 #   - Rename misnamed files (AI.a2ml → 0-AI-MANIFEST.a2ml)
-#   - Fix SPDX headers (AGPL → PMPL in dotfiles)
+#   - Fix SPDX headers (AGPL → MPL-2.0 in dotfiles)
 #   - Create missing required files (SECURITY.md, CONTRIBUTING.md)
 #   - Report unfixable issues as PR comments
 #
@@ -88,7 +88,7 @@ jobs:
           for dotfile in .gitignore .gitattributes .editorconfig; do
             if [ -f "$dotfile" ] && grep -q "AGPL-3.0" "$dotfile" 2>/dev/null; then
               sed -i 's/AGPL-3.0-or-later/MPL-2.0/g; s/AGPL-3.0/MPL-2.0/g' "$dotfile"
-              FIXES="$FIXES\n- Fixed SPDX header in \`$dotfile\` (AGPL → PMPL)"
+              FIXES="$FIXES\n- Fixed SPDX header in \`$dotfile\` (AGPL → MPL-2.0)"
               CHANGED=true
             fi
           done
@@ -96,7 +96,7 @@ jobs:
           # --- 5. Create missing required files ---
           if [ ! -f "SECURITY.md" ]; then
             cat > SECURITY.md << 'SECEOF'
-          <!-- SPDX-License-Identifier: MPL-2.0 -->
+          <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
           # Security Policy
 
           ## Reporting a Vulnerability
@@ -116,7 +116,7 @@ jobs:
 
           if [ ! -f "CONTRIBUTING.md" ]; then
             cat > CONTRIBUTING.md << 'CONTEOF'
-          <!-- SPDX-License-Identifier: MPL-2.0 -->
+          <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
           # Contributing
 
           1. Fork the repository

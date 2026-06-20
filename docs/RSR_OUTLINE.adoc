@@ -1,6 +1,6 @@
 = RSR Template Repository
 
-image:[Palimpsest-MPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"] image:[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/License-MPL--2.0%20%2B%20CC--BY--SA--4.0-blue[License: MPL-2.0 + CC-BY-SA-4.0]
 :toc:
 :sectnums:
 
@@ -78,13 +78,7 @@ just validate-rsr
 |Container build (Wolfi base, Podman)
 
 |`LICENSE`
-|MPL-2.0 (Palimpsest MPL)
-
-|`EXHIBIT-A-ETHICAL-USE.txt`
-|Ethical use guidelines (LICENSE Exhibit A)
-
-|`EXHIBIT-B-QUANTUM-SAFE.txt`
-|Quantum-safe provenance spec (LICENSE Exhibit B)
+|MPL-2.0 (code) + CC-BY-SA-4.0 (docs)
 
 |`README.adoc`
 |Project overview
@@ -281,7 +275,7 @@ This template is part of:
 
 == License
 
-SPDX-License-Identifier: MPL-2.0
+SPDX-License-Identifier: CC-BY-SA-4.0
 
 == Links
 

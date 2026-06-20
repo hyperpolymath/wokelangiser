@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # wokelangiser — Project Instructions
 
 ## Overview
@@ -27,7 +28,7 @@ cargo test
 ## Key Design Decisions
 
 - Follows hyperpolymath ABI-FFI standard (Idris2 ABI, Zig FFI)
-- MPL-2.0 license
+- Licensing: MPL-2.0 (code/config/CI) + CC-BY-SA-4.0 (documentation/prose); both texts in LICENSES/, mapped in .machine_readable/compliance/reuse/dep5
 - RSR (Rhodium Standard Repository) template
 - Author: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 

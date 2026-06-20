@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # TEST-NEEDS.md — wokelangiser
 
 ## CRG Grade: C — ACHIEVED 2026-04-04

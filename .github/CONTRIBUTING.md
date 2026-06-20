@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Clone the repository
 git clone https://github.com/hyperpolymath/wokelangiser.git
 cd wokelangiser

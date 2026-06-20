@@ -130,10 +130,11 @@ K9!
     },
 
     "add-license" = {
-      description = "Add PMPL-1.0 license",
+      description = "Verify MPL-2.0 + CC-BY-SA-4.0 licensing (REUSE)",
       commands = [
-        "curl -sL https://raw.githubusercontent.com/hyperpolymath/pmpl/main/LICENSE -o LICENSE",
-        "echo '✓ License added'",
+        # Licensing is MPL-2.0 (code) + CC-BY-SA-4.0 (docs); full texts in LICENSES/.
+        # Do NOT fetch a remote licence. Mapping: .machine_readable/compliance/reuse/dep5
+        "test -f LICENSE && test -f LICENSES/MPL-2.0.txt && test -f LICENSES/CC-BY-SA-4.0.txt && echo '✓ Licensing present (MPL-2.0 + CC-BY-SA-4.0)'",
       ],
     },
 

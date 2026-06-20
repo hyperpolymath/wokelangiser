@@ -57,9 +57,24 @@ These are hard requirements — CI fails if any check fails.
 - severity: warning
 
 ### no-agpl
-- description: No AGPL-3.0 references (superseded by PMPL)
+- description: No AGPL-3.0 references (superseded by MPL-2.0)
 - run: "! grep -r 'AGPL-3.0' .gitignore .gitattributes .editorconfig 2>/dev/null | head -1 | grep -q ."
 - severity: critical
+
+### no-pmpl
+- description: No superseded licence identifiers remain (project is MPL-2.0 + CC-BY-SA-4.0)
+- run: "! grep -rniI 'palimpsest\|pmpl' . --exclude-dir=.git --exclude-dir=contractiles --exclude='*.just' --exclude=dep5 --exclude=0002-licensing-policy.adoc | head -1 | grep -q ."
+- severity: critical
+
+### licenses-present
+- description: Both REUSE licence texts exist (MPL-2.0 + CC-BY-SA-4.0)
+- run: test -f LICENSES/MPL-2.0.txt && test -f LICENSES/CC-BY-SA-4.0.txt
+- severity: critical
+
+### docs-cc-by-sa
+- description: Documentation (*.adoc / *.md) carries the CC-BY-SA-4.0 SPDX header
+- run: "! git ls-files '*.adoc' '*.md' | xargs grep -L 'SPDX-License-Identifier: CC-BY-SA-4.0' 2>/dev/null | head -1 | grep -q ."
+- severity: warning
 
 ## Dangerous Patterns
 
