@@ -6,7 +6,7 @@
 
 [metadata]
 version = "0.1.0"
-last-updated = "2026-03-21"
+last-updated = "2026-06-21"
 
 [hypatia-config]
 scan-enabled = true
@@ -30,3 +30,14 @@ rules = [
 # Neural pattern detection settings
 confidence-threshold = 0.85
 # model = "hypatia-v2"
+
+[known-issues]
+# The standards-reusable Hypatia scan currently fails at action-resolution:
+# hypatia-scan.yml pins hyperpolymath/standards@5a93d9d57cc04de4002d6d0ecd336fc7a8698910,
+# whose hypatia-scan-reusable.yml references an unresolvable
+# actions/cache@d4373f267a887d77f9eb0683a479ec60b1fe5b2b.
+# The repo's other Hypatia job ("Hypatia neurosymbolic scan") still passes, so
+# analysis coverage is retained. Fix: repair the pin upstream in
+# hyperpolymath/standards, then bump the consumer pins.
+hypatia-scan-status = "failing-upstream-pin"
+affected-workflows = ["hypatia-scan.yml", "governance.yml", "scorecard.yml"]

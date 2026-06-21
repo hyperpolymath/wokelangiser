@@ -5,7 +5,7 @@
 
 [metadata]
 version = "1.0.0"
-last-updated = "{{CURRENT_DATE}}"
+last-updated = "2026-06-21"
 
 [anchor]
 schema = "hyperpolymath.anchor/1"
@@ -19,10 +19,10 @@ purpose = [
 ]
 
 [identity]
-project = "{{PROJECT_NAME}}"
-kind = "{{PROJECT_KIND}}"                # language | library | service | tool
-one-sentence = "{{PROJECT_PURPOSE}}"
-domain = "{{PROJECT_DOMAIN}}"
+project = "wokelangiser"
+kind = "tool"                # language | library | service | tool
+one-sentence = "Add consent patterns, accessibility annotations, i18n hooks, and cultural sensitivity markers to existing code via WokeLang"
+domain = "code-generation, compliance, accessibility"
 
 [semantic-authority]
 policy = "canonical"
