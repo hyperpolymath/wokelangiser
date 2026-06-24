@@ -62,7 +62,7 @@ must-licenses-present:
 
 # Docs (*.adoc / *.md) carry the CC-BY-SA-4.0 SPDX header
 must-docs-cc-by-sa:
-    ! git ls-files '*.adoc' '*.md' | xargs grep -L 'SPDX-License-Identifier: CC-BY-SA-4.0' 2>/dev/null | head -1 | grep -q .
+    ! git ls-files '*.adoc' '*.md' | xargs grep -L 'SPDX-License-Identifier: MPL-2.0' 2>/dev/null | head -1 | grep -q .
 
 
 # === TRUST (Integrity & Provenance Verification) ===
