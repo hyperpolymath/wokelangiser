@@ -185,7 +185,7 @@ export fn wokelangiser_inject_consent(
     }
 
     // TODO: Implement consent point injection into source AST
-    _ = location_ptr;
+    // (location_ptr is validated above; injection into the source AST is future work.)
 
     clearError();
     return .ok;
@@ -376,9 +376,9 @@ export fn wokelangiser_contrast_ratio(foreground: u32, background: u32) u32 {
     const lighter = @max(fg_lum, bg_lum);
     const darker = @min(fg_lum, bg_lum);
 
-    // Contrast ratio = (L1 + 0.05) / (L2 + 0.05), scaled by 100
-    if (darker + 5 == 0) return 2100; // Maximum contrast (black on white)
-    return @intFromFloat((lighter + 5.0) / (darker + 5.0) * 100.0);
+    // Contrast ratio = (L1 + 0.05) / (L2 + 0.05), scaled by 100.
+    // Black-on-white gives (1.0 + 0.05) / (0.0 + 0.05) * 100 = 2100 (21:1).
+    return @intFromFloat((lighter + 0.05) / (darker + 0.05) * 100.0);
 }
 
 /// Calculate relative luminance of a 24-bit RGB colour.
@@ -429,8 +429,7 @@ export fn wokelangiser_extract_strings(
     }
 
     // TODO: Implement string extraction from source AST
-    _ = source_ptr;
-    _ = output_ptr;
+    // (source_ptr/output_ptr are validated above; extraction is future work.)
 
     clearError();
     return .ok;
@@ -464,8 +463,7 @@ export fn wokelangiser_format_locale(
     }
 
     // TODO: Implement locale-specific formatting
-    _ = locale_ptr;
-    _ = value_ptr;
+    // (locale_ptr/value_ptr are validated above; formatting is future work.)
 
     clearError();
     return .ok;
@@ -502,7 +500,7 @@ export fn wokelangiser_check_sensitivity(
     }
 
     // TODO: Implement cultural sensitivity checking against term database
-    _ = content_ptr;
+    // (content_ptr is validated above; sensitivity analysis is future work.)
 
     clearError();
     return .ok;
@@ -536,8 +534,7 @@ export fn wokelangiser_suggest_alternative(
     }
 
     // TODO: Implement alternative suggestion lookup
-    _ = term_ptr;
-    _ = output_ptr;
+    // (term_ptr/output_ptr are validated above; suggestion lookup is future work.)
 
     clearError();
     return .ok;
