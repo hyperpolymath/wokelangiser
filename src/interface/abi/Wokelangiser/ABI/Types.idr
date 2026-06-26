@@ -14,6 +14,7 @@ module Wokelangiser.ABI.Types
 import Data.Bits
 import Data.So
 import Data.Vect
+import Decidable.Equality
 
 %default total
 
@@ -27,12 +28,12 @@ data Platform = Linux | Windows | MacOS | BSD | WASM
 
 ||| Compile-time platform detection
 ||| This will be set during compilation based on target
+||| The platform this build targets. Defaults to Linux; the Rust/Zig build
+||| layer overrides this via the codegen target selection. (Previously a
+||| `%runElab` stub that required ElabReflection and did not compile.)
 public export
 thisPlatform : Platform
-thisPlatform =
-  %runElab do
-    -- Platform detection logic
-    pure Linux  -- Default, override with compiler flags
+thisPlatform = Linux
 
 --------------------------------------------------------------------------------
 -- Consent Types
@@ -68,14 +69,27 @@ consentFromInt 2 = Just Withdraw
 consentFromInt 3 = Just AuditTrail
 consentFromInt _ = Nothing
 
-||| ConsentType values are decidably equal
+||| ConsentType values are decidably equal. The off-diagonal cases discharge
+||| disequality explicitly; the previous `decEq _ _ = No absurd` did not compile
+||| (no `Uninhabited (x = y)` instance exists for these).
 public export
 DecEq ConsentType where
   decEq OptIn OptIn = Yes Refl
   decEq OptOut OptOut = Yes Refl
   decEq Withdraw Withdraw = Yes Refl
   decEq AuditTrail AuditTrail = Yes Refl
-  decEq _ _ = No absurd
+  decEq OptIn OptOut = No (\case Refl impossible)
+  decEq OptIn Withdraw = No (\case Refl impossible)
+  decEq OptIn AuditTrail = No (\case Refl impossible)
+  decEq OptOut OptIn = No (\case Refl impossible)
+  decEq OptOut Withdraw = No (\case Refl impossible)
+  decEq OptOut AuditTrail = No (\case Refl impossible)
+  decEq Withdraw OptIn = No (\case Refl impossible)
+  decEq Withdraw OptOut = No (\case Refl impossible)
+  decEq Withdraw AuditTrail = No (\case Refl impossible)
+  decEq AuditTrail OptIn = No (\case Refl impossible)
+  decEq AuditTrail OptOut = No (\case Refl impossible)
+  decEq AuditTrail Withdraw = No (\case Refl impossible)
 
 ||| Consent state machine: tracks lifecycle of a consent grant.
 ||| Transitions: Pending -> Granted -> (Active | Revoked)
@@ -130,13 +144,19 @@ wcagFromInt 1 = Just AA
 wcagFromInt 2 = Just AAA
 wcagFromInt _ = Nothing
 
-||| WCAGLevel values are decidably equal
+||| WCAGLevel values are decidably equal. Off-diagonal cases discharge
+||| disequality explicitly (the prior `No absurd` catch-all did not compile).
 public export
 DecEq WCAGLevel where
   decEq A A = Yes Refl
   decEq AA AA = Yes Refl
   decEq AAA AAA = Yes Refl
-  decEq _ _ = No absurd
+  decEq A AA = No (\case Refl impossible)
+  decEq A AAA = No (\case Refl impossible)
+  decEq AA A = No (\case Refl impossible)
+  decEq AA AAA = No (\case Refl impossible)
+  decEq AAA A = No (\case Refl impossible)
+  decEq AAA AA = No (\case Refl impossible)
 
 ||| Proof that one WCAG level subsumes another.
 ||| AA subsumes A; AAA subsumes AA (and transitively A).
@@ -175,6 +195,18 @@ data ContrastMeetsLevel : Bits32 -> WCAGLevel -> Type where
 -- Internationalisation Types
 --------------------------------------------------------------------------------
 
+||| Formatting categories for locale-aware value rendering.
+||| (Defined before `I18nHook` because `FormatSpec` references it — the
+||| original scaffold had this declared *after* its use, which did not compile.)
+public export
+data FormatKind : Type where
+  ||| Date formatting (ISO 8601 -> locale-specific)
+  DateFmt     : FormatKind
+  ||| Number formatting (decimal separator, grouping)
+  NumberFmt   : FormatKind
+  ||| Currency formatting (symbol, position, decimals)
+  CurrencyFmt : FormatKind
+
 ||| Internationalisation hook types for locale-aware string handling.
 public export
 data I18nHook : Type where
@@ -186,16 +218,6 @@ data I18nHook : Type where
   Pluralise : I18nHook
   ||| Format a value according to locale conventions
   FormatSpec : (kind : FormatKind) -> I18nHook
-
-||| Formatting categories for locale-aware value rendering
-public export
-data FormatKind : Type where
-  ||| Date formatting (ISO 8601 -> locale-specific)
-  DateFmt     : FormatKind
-  ||| Number formatting (decimal separator, grouping)
-  NumberFmt   : FormatKind
-  ||| Currency formatting (symbol, position, decimals)
-  CurrencyFmt : FormatKind
 
 ||| Convert I18nHook to C-compatible integer (tag variant only)
 public export
@@ -276,7 +298,8 @@ resultFromInt 6 = Just AccessibilityFailed
 resultFromInt 7 = Just I18nError
 resultFromInt _ = Nothing
 
-||| Results are decidably equal
+||| Results are decidably equal. Off-diagonal cases discharge disequality
+||| explicitly; the previous `decEq _ _ = No absurd` did not compile.
 public export
 DecEq Result where
   decEq Ok Ok = Yes Refl
@@ -287,7 +310,62 @@ DecEq Result where
   decEq ConsentRequired ConsentRequired = Yes Refl
   decEq AccessibilityFailed AccessibilityFailed = Yes Refl
   decEq I18nError I18nError = Yes Refl
-  decEq _ _ = No absurd
+  decEq Ok Error = No (\case Refl impossible)
+  decEq Ok InvalidParam = No (\case Refl impossible)
+  decEq Ok OutOfMemory = No (\case Refl impossible)
+  decEq Ok NullPointer = No (\case Refl impossible)
+  decEq Ok ConsentRequired = No (\case Refl impossible)
+  decEq Ok AccessibilityFailed = No (\case Refl impossible)
+  decEq Ok I18nError = No (\case Refl impossible)
+  decEq Error Ok = No (\case Refl impossible)
+  decEq Error InvalidParam = No (\case Refl impossible)
+  decEq Error OutOfMemory = No (\case Refl impossible)
+  decEq Error NullPointer = No (\case Refl impossible)
+  decEq Error ConsentRequired = No (\case Refl impossible)
+  decEq Error AccessibilityFailed = No (\case Refl impossible)
+  decEq Error I18nError = No (\case Refl impossible)
+  decEq InvalidParam Ok = No (\case Refl impossible)
+  decEq InvalidParam Error = No (\case Refl impossible)
+  decEq InvalidParam OutOfMemory = No (\case Refl impossible)
+  decEq InvalidParam NullPointer = No (\case Refl impossible)
+  decEq InvalidParam ConsentRequired = No (\case Refl impossible)
+  decEq InvalidParam AccessibilityFailed = No (\case Refl impossible)
+  decEq InvalidParam I18nError = No (\case Refl impossible)
+  decEq OutOfMemory Ok = No (\case Refl impossible)
+  decEq OutOfMemory Error = No (\case Refl impossible)
+  decEq OutOfMemory InvalidParam = No (\case Refl impossible)
+  decEq OutOfMemory NullPointer = No (\case Refl impossible)
+  decEq OutOfMemory ConsentRequired = No (\case Refl impossible)
+  decEq OutOfMemory AccessibilityFailed = No (\case Refl impossible)
+  decEq OutOfMemory I18nError = No (\case Refl impossible)
+  decEq NullPointer Ok = No (\case Refl impossible)
+  decEq NullPointer Error = No (\case Refl impossible)
+  decEq NullPointer InvalidParam = No (\case Refl impossible)
+  decEq NullPointer OutOfMemory = No (\case Refl impossible)
+  decEq NullPointer ConsentRequired = No (\case Refl impossible)
+  decEq NullPointer AccessibilityFailed = No (\case Refl impossible)
+  decEq NullPointer I18nError = No (\case Refl impossible)
+  decEq ConsentRequired Ok = No (\case Refl impossible)
+  decEq ConsentRequired Error = No (\case Refl impossible)
+  decEq ConsentRequired InvalidParam = No (\case Refl impossible)
+  decEq ConsentRequired OutOfMemory = No (\case Refl impossible)
+  decEq ConsentRequired NullPointer = No (\case Refl impossible)
+  decEq ConsentRequired AccessibilityFailed = No (\case Refl impossible)
+  decEq ConsentRequired I18nError = No (\case Refl impossible)
+  decEq AccessibilityFailed Ok = No (\case Refl impossible)
+  decEq AccessibilityFailed Error = No (\case Refl impossible)
+  decEq AccessibilityFailed InvalidParam = No (\case Refl impossible)
+  decEq AccessibilityFailed OutOfMemory = No (\case Refl impossible)
+  decEq AccessibilityFailed NullPointer = No (\case Refl impossible)
+  decEq AccessibilityFailed ConsentRequired = No (\case Refl impossible)
+  decEq AccessibilityFailed I18nError = No (\case Refl impossible)
+  decEq I18nError Ok = No (\case Refl impossible)
+  decEq I18nError Error = No (\case Refl impossible)
+  decEq I18nError InvalidParam = No (\case Refl impossible)
+  decEq I18nError OutOfMemory = No (\case Refl impossible)
+  decEq I18nError NullPointer = No (\case Refl impossible)
+  decEq I18nError ConsentRequired = No (\case Refl impossible)
+  decEq I18nError AccessibilityFailed = No (\case Refl impossible)
 
 --------------------------------------------------------------------------------
 -- Opaque Handles
@@ -299,12 +377,15 @@ public export
 data Handle : Type where
   MkHandle : (ptr : Bits64) -> {auto 0 nonNull : So (ptr /= 0)} -> Handle
 
-||| Safely create a handle from a pointer value.
-||| Returns Nothing if pointer is null.
+||| Safely create a handle from a pointer value. Uses `choose` to obtain a
+||| real `So (ptr /= 0)` witness for the non-null branch. (Previously
+||| `Just (MkHandle ptr)` left the `auto` proof unsolved and did not compile.)
 public export
 createHandle : Bits64 -> Maybe Handle
-createHandle 0 = Nothing
-createHandle ptr = Just (MkHandle ptr)
+createHandle ptr =
+  case choose (ptr /= 0) of
+    Left ok => Just (MkHandle ptr {nonNull = ok})
+    Right _ => Nothing
 
 ||| Extract pointer value from handle
 public export
@@ -342,10 +423,17 @@ ptrSize MacOS = 64
 ptrSize BSD = 64
 ptrSize WASM = 32
 
-||| Pointer type for platform
+||| Pointer-sized integer type for a platform. Native targets use 64-bit
+||| pointers; WASM uses 32-bit. (The original scaffold wrote `Bits (ptrSize p)`,
+||| but `Data.Bits.Bits` is an interface, not a `Nat -> Type` family, so it did
+||| not typecheck.)
 public export
 CPtr : Platform -> Type -> Type
-CPtr p _ = Bits (ptrSize p)
+CPtr Linux   _ = Bits64
+CPtr Windows _ = Bits64
+CPtr MacOS   _ = Bits64
+CPtr BSD     _ = Bits64
+CPtr WASM    _ = Bits32
 
 --------------------------------------------------------------------------------
 -- Memory Layout Proofs
