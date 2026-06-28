@@ -337,7 +337,8 @@ mod tests {
             context: None,
         }];
 
-        let files = generate_locale_files(&manifest, &strings, output_dir).expect("TODO: handle error");
+        let files =
+            generate_locale_files(&manifest, &strings, output_dir).expect("TODO: handle error");
         assert_eq!(files.len(), 2); // en-GB + fr-FR
 
         // Check that the default locale file has the value.

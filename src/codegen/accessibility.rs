@@ -356,7 +356,8 @@ mod tests {
             criterion: "1.1.1".to_string(),
         }];
 
-        let report = generate_accessibility_report(&manifest, &violations).expect("TODO: handle error");
+        let report =
+            generate_accessibility_report(&manifest, &violations).expect("TODO: handle error");
         assert!(!report.passes); // should fail due to error-level violation
         assert_eq!(report.accessibility_violations_count, 1);
     }
