@@ -12,3 +12,4 @@ modules = Wokelangiser.ABI.Types
         , Wokelangiser.ABI.Semantics
         , Wokelangiser.ABI.Invariants
         , Wokelangiser.ABI.FfiSeam
+        , Wokelangiser.ABI.Capstone
