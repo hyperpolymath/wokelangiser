@@ -9,7 +9,3 @@ modules = Wokelangiser.ABI.Types
         , Wokelangiser.ABI.Layout
         , Wokelangiser.ABI.Foreign
         , Wokelangiser.ABI.Proofs
-        , Wokelangiser.ABI.Semantics
-        , Wokelangiser.ABI.Invariants
-        , Wokelangiser.ABI.FfiSeam
-        , Wokelangiser.ABI.Capstone
