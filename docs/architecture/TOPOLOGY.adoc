@@ -1,17 +1,15 @@
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<!-- Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk> -->
+== Wokelangiser Topology
 
-# Wokelangiser Topology
+=== Overview
 
-## Overview
+Wokelangiser transforms existing code into consent-aware, accessible,
+internationalised, and culturally sensitive software by injecting
+WokeLang decorator patterns at the source level. It follows the standard
+hyperpolymath -iser architecture.
 
-Wokelangiser transforms existing code into consent-aware, accessible, internationalised,
-and culturally sensitive software by injecting WokeLang decorator patterns at the source
-level. It follows the standard hyperpolymath -iser architecture.
+=== Data Flow
 
-## Data Flow
-
-```
+....
 wokelangiser.toml (manifest)
         |
         v
@@ -74,11 +72,11 @@ wokelangiser.toml (manifest)
                 v
   [Generated] src/interface/generated/abi/
         C headers auto-generated from Zig exports
-```
+....
 
-## Module Dependency Graph
+=== Module Dependency Graph
 
-```
+....
 Wokelangiser.ABI.Types
     ^           ^
     |           |
@@ -89,46 +87,65 @@ Wokelangiser.ABI.Layout    Wokelangiser.ABI.Foreign
                                     |
                                     v
                             wokelangiser (Rust CLI)
-```
+....
 
-## Key Struct Layouts (FFI Boundary)
+=== Key Struct Layouts (FFI Boundary)
 
-| Struct                | Size | Align | Fields                                          |
-|-----------------------|------|-------|-------------------------------------------------|
-| ConsentRecord         | 24B  | 8     | consent_type(u32), state(u32), timestamp(u64), subject_id(u64) |
-| AccessibilityRecord   | 32B  | 8     | wcag_level(u32), focus_order(u32), contrast_ratio(u32), _pad(u32), aria_label_ptr(u64), role_ptr(u64) |
-| I18nRecord            | 24B  | 8     | hook_type(u32), format_kind(u32), locale_tag_ptr(u64), source_ptr(u64) |
+[width="100%",cols="28%,7%,8%,57%",options="header",]
+|===
+|Struct |Size |Align |Fields
+|ConsentRecord |24B |8 |consent_type(u32), state(u32), timestamp(u64),
+subject_id(u64)
 
-## Consent State Machine
+|AccessibilityRecord |32B |8 |wcag_level(u32), focus_order(u32),
+contrast_ratio(u32), _pad(u32), aria_label_ptr(u64), role_ptr(u64)
 
-```
+|I18nRecord |24B |8 |hook_type(u32), format_kind(u32),
+locale_tag_ptr(u64), source_ptr(u64)
+|===
+
+=== Consent State Machine
+
+....
   Pending --GrantConsent--> Granted --ActivateConsent--> Active --RevokeActive--> Revoked
                                |                                                    ^
                                +----------RevokeGranted-----------------------------+
-```
+....
 
-All transitions are encoded as `ValidTransition` proofs in `Types.idr`.
-Invalid transitions (e.g. Pending -> Active, Revoked -> anything) are
-rejected at the type level.
+All transitions are encoded as `+ValidTransition+` proofs in
+`+Types.idr+`. Invalid transitions (e.g. Pending -> Active, Revoked ->
+anything) are rejected at the type level.
 
-## WCAG Contrast Thresholds
+=== WCAG Contrast Thresholds
 
-| Level | Minimum Ratio | Encoded Value |
-|-------|---------------|---------------|
-| A     | none          | 0             |
-| AA    | 4.5:1         | 450           |
-| AAA   | 7.0:1         | 700           |
+[cols=",,",options="header",]
+|===
+|Level |Minimum Ratio |Encoded Value
+|A |none |0
+|AA |4.5:1 |450
+|AAA |7.0:1 |700
+|===
 
 Contrast ratio calculated using WCAG 2.2 relative luminance algorithm
-(sRGB linearisation + weighted sum) in `wokelangiser_contrast_ratio`.
+(sRGB linearisation + weighted sum) in `+wokelangiser_contrast_ratio+`.
 
-## Integration Points
+=== Integration Points
 
-| System       | Role                                              |
-|--------------|---------------------------------------------------|
-| iseriser     | Meta-framework that generated this scaffold        |
-| proven       | Shared Idris2 verified library (consent proofs)    |
-| PanLL        | Consent dashboard + accessibility audit panels     |
-| BoJ-server   | Cartridge for automated accessibility scanning     |
-| VeriSimDB    | Consent audit trail persistence                    |
-| WokeLang     | The specialist language wokelangiser bridges *other* code to (injects WokeLang's consent/accessibility patterns at the source level). Standalone repo: hyperpolymath/wokelang — you don't run wokelangiser on WokeLang itself |
+[width="100%",cols="22%,78%",options="header",]
+|===
+|System |Role
+|iseriser |Meta-framework that generated this scaffold
+
+|proven |Shared Idris2 verified library (consent proofs)
+
+|PanLL |Consent dashboard + accessibility audit panels
+
+|BoJ-server |Cartridge for automated accessibility scanning
+
+|VeriSimDB |Consent audit trail persistence
+
+|WokeLang |The specialist language wokelangiser bridges _other_ code to
+(injects WokeLang’s consent/accessibility patterns at the source level).
+Standalone repo: hyperpolymath/wokelang — you don’t run wokelangiser on
+WokeLang itself
+|===
