@@ -1,14 +1,19 @@
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<!-- Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk> -->
-# TOPOLOGY.md — wokelangiser
+== TOPOLOGY.md — wokelangiser
 
-## Purpose
+=== Purpose
 
-wokelangiser adds consent patterns, accessibility compliance (WCAG/ARIA), and internationalisation to existing code via WokeLang. Given a `wokelangiser.toml` manifest describing target modules and compliance requirements, it generates consent gate wrappers, accessibility audit reports, and i18n locale files. wokelangiser targets any codebase whose authors want to systematically address user rights, accessibility standards, and i18n readiness without manually threading these concerns through every module.
+wokelangiser adds consent patterns, accessibility compliance
+(WCAG/ARIA), and internationalisation to existing code via WokeLang.
+Given a `+wokelangiser.toml+` manifest describing target modules and
+compliance requirements, it generates consent gate wrappers,
+accessibility audit reports, and i18n locale files. wokelangiser targets
+any codebase whose authors want to systematically address user rights,
+accessibility standards, and i18n readiness without manually threading
+these concerns through every module.
 
-## Module Map
+=== Module Map
 
-```
+....
 wokelangiser/
 ├── src/
 │   ├── main.rs                    # CLI entry point (clap): init, validate, generate, build, run, info
@@ -20,11 +25,11 @@ wokelangiser/
 ├── verification/                  # Proof harnesses
 ├── container/                     # Stapeln container ecosystem
 └── .machine_readable/             # A2ML metadata
-```
+....
 
-## Data Flow
+=== Data Flow
 
-```
+....
 wokelangiser.toml manifest
         │
    ┌────▼────┐
@@ -40,4 +45,4 @@ wokelangiser.toml manifest
    │ Codegen  │  emit generated/wokelangiser/ (consent gates, WCAG/ARIA a11y report,
    │          │  i18n locale files)
    └─────────┘
-```
+....
